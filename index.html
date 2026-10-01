@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1020">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Winter Arc — 90 Day Tracker</title>
+<style>
+:root{
+  --bg:#080c17; --card:#11182a; --card2:#151e33; --line:#26324b;
+  --text:#f4f7ff; --muted:#9aa7bd; --blue:#4da3ff; --cyan:#38d9ff;
+  --green:#41d98a; --orange:#ffb44a; --red:#ff6678; --purple:#a982ff;
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at top,#15243d 0,#080c17 45%);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+.app{max-width:720px;margin:auto;padding:16px 14px 90px}
+.hero{padding:22px 18px 18px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(145deg,#142746,#0d1322);box-shadow:0 15px 50px #0006}
+.eyebrow{font-size:12px;letter-spacing:2px;color:var(--cyan);font-weight:800}
+h1{font-size:34px;line-height:1;margin:7px 0}
+.hero p{margin:8px 0 0;color:var(--muted)}
+.nav{display:flex;gap:8px;overflow:auto;margin:14px 0}
+.nav button{white-space:nowrap;border:1px solid var(--line);background:var(--card);color:var(--muted);padding:10px 14px;border-radius:13px;font-weight:700}
+.nav button.active{background:#18375b;color:white;border-color:#2d77b8}
+.card{background:rgba(17,24,42,.94);border:1px solid var(--line);border-radius:20px;padding:16px;margin:12px 0}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+h2{font-size:18px;margin:0 0 12px} h3{font-size:14px;margin:0}
+.muted{color:var(--muted);font-size:13px}
+.datebar{display:grid;grid-template-columns:44px 1fr 44px;gap:8px;align-items:center}
+.datebar button,.iconbtn{height:42px;border:1px solid var(--line);background:var(--card2);color:white;border-radius:12px;font-size:18px}
+.date{text-align:center;font-weight:800}.date small{display:block;color:var(--muted);font-weight:500;font-size:11px;margin-top:3px}
+.score{display:grid;grid-template-columns:96px 1fr;gap:15px;align-items:center}
+.ring{width:96px;height:96px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--green) var(--p),#273149 0)}
+.ring:after{content:"";position:absolute}.ringinner{width:76px;height:76px;border-radius:50%;background:var(--card);display:grid;place-items:center;font-size:20px;font-weight:900}
+.bar{height:9px;background:#273149;border-radius:20px;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--green));border-radius:20px;transition:.25s}
+.habit{display:flex;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid #202a40;cursor:pointer}
+.habit:last-child{border-bottom:0}
+.check{width:27px;height:27px;border:2px solid #46536d;border-radius:8px;display:grid;place-items:center;flex:none}
+.habit.done .check{background:var(--green);border-color:var(--green);color:#06130c;font-weight:1000}
+.habit.done .label{text-decoration:line-through;color:#8491a8}
+.icon{width:25px;text-align:center}.label{flex:1;font-weight:650;font-size:14px}
+.tag{font-size:10px;color:var(--muted);border:1px solid var(--line);padding:3px 6px;border-radius:7px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.stat{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:12px}
+.stat b{display:block;font-size:21px;margin-top:3px}
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.calhead{text-align:center;color:var(--muted);font-size:10px}
+.day{aspect-ratio:1;border:1px solid var(--line);border-radius:8px;background:#0e1525;color:var(--muted);font-size:10px;display:grid;place-items:center;position:relative}
+.day.good{background:#12402e;color:#bff9d8;border-color:#236f50}.day.mid{background:#3e3117;color:#ffe0a3}.day.bad{background:#3a1e28;color:#ffbdc6}.day.today{outline:2px solid var(--cyan);outline-offset:1px}.day.empty{background:transparent;border:0}
+textarea{width:100%;min-height:105px;resize:vertical;background:#0c1322;border:1px solid var(--line);border-radius:13px;color:white;padding:12px;font:inherit;outline:none}
+textarea:focus{border-color:var(--blue)}
+.action{width:100%;border:0;border-radius:13px;padding:13px;background:var(--blue);color:white;font-weight:800;font-size:14px}
+.secondary{background:var(--card2);border:1px solid var(--line)}
+.warning{color:#ffd28a}.success{color:#7ff0ae}
+.quote{text-align:center;padding:15px;color:#dce6fa;font-weight:800;font-size:14px}
+.footer{text-align:center;color:#66738b;font-size:11px;margin-top:22px}
+.hidden{display:none!important}
+@media(min-width:600px){.app{padding-top:28px}.habit{padding:14px 7px}}
+</style>
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#0b1020">
+</head>
+<body>
+<div class="app">
+  <section class="hero">
+    <div class="eyebrow">OCTOBER → DECEMBER • 90 DAYS</div>
+    <h1>❄️ WINTER ARC</h1>
+    <p>Same person. Stronger mind. Better habits. Real progress.</p>
+  </section>
+
+  <div class="nav">
+    <button id="tabToday" class="active" onclick="showTab('today')">Today</button>
+    <button id="tabStats" onclick="showTab('stats')">Progress</button>
+    <button id="tabReview" onclick="showTab('review')">Weekly Review</button>
+  </div>
+
+  <main id="today">
+    <section class="card">
+      <div class="datebar">
+        <button onclick="moveDate(-1)">‹</button>
+        <div class="date" id="dateTitle"></div>
+        <button onclick="moveDate(1)">›</button>
+      </div>
+      <div style="margin-top:12px"><button class="action secondary" onclick="goToday()">Jump to Today</button></div>
+    </section>
+
+    <section class="card score">
+      <div class="ring" id="ring"><div class="ringinner" id="scoreText">0%</div></div>
+      <div>
+        <div class="row"><h2 style="margin:0">Today's Score</h2><span class="muted" id="countText">0 / 14</span></div>
+        <p class="muted" id="message" style="margin:7px 0 10px">Start with one tick. Momentum follows.</p>
+        <div class="bar"><div class="fill" id="fill"></div></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="row"><h2>Daily Checklist</h2><span class="tag">TAP TO TICK</span></div>
+      <div id="habits"></div>
+    </section>
+
+    <section class="card">
+      <h2>📝 Today's Note</h2>
+      <textarea id="note" placeholder="What went well? What will you improve tomorrow?"></textarea>
+      <div style="height:8px"></div>
+      <button class="action" onclick="saveNote()">Save Note</button>
+    </section>
+
+    <section class="card quote">🔥 Never miss twice. A bad day is not a failed arc.</section>
+  </main>
+
+  <main id="stats" class="hidden">
+    <section class="card">
+      <h2>📈 90-Day Progress</h2>
+      <div class="grid">
+        <div class="stat"><span class="muted">Days</span><b id="daysDone">0</b></div>
+        <div class="stat"><span class="muted">Avg. score</span><b id="avgScore">0%</b></div>
+        <div class="stat"><span class="muted">Best streak</span><b id="bestStreak">0</b></div>
+      </div>
+    </section>
+    <section class="card">
+      <h2>🔥 Current Streak</h2>
+      <div class="row"><b id="currentStreak" style="font-size:30px">0 days</b><span class="muted">10+ habits/day</span></div>
+      <div style="height:10px"></div><div class="bar"><div class="fill" id="streakFill"></div></div>
+    </section>
+    <section class="card">
+      <h2>🗓️ Consistency Calendar</h2>
+      <div class="calendar" id="calendar"></div>
+    </section>
+    <section class="card">
+      <h2>🎯 Your 90-Day Targets</h2>
+      <div class="habit"><span class="icon">🎓</span><span class="label">Build stronger CGPA + exam consistency</span></div>
+      <div class="habit"><span class="icon">💻</span><span class="label">Improve DSA, Python, SQL & ML</span></div>
+      <div class="habit"><span class="icon">🚀</span><span class="label">Finish 2–3 solid projects with GitHub READMEs</span></div>
+      <div class="habit"><span class="icon">🏋️</span><span class="label">Get stronger and visibly fitter</span></div>
+      <div class="habit"><span class="icon">🗣️</span><span class="label">Improve English & technical communication</span></div>
+      <div class="habit"><span class="icon">🧠</span><span class="label">Build disciplined routines instead of chasing motivation</span></div>
+    </section>
+  </main>
+
+  <main id="review" class="hidden">
+    <section class="card">
+      <h2>🔍 Weekly Review</h2>
+      <p class="muted">Do this once each Sunday. Be honest, not harsh.</p>
+      <textarea id="reviewText" placeholder="1. What worked?
+2. What distracted me?
+3. Which habit was weakest?
+4. What did I accomplish?
+5. What will I change next week?"></textarea>
+      <div style="height:8px"></div>
+      <button class="action" onclick="saveReview()">Save Weekly Review</button>
+    </section>
+    <section class="card">
+      <h2>📌 Rules</h2>
+      <div class="habit"><span class="icon">1️⃣</span><span class="label">Never miss twice.</span></div>
+      <div class="habit"><span class="icon">2️⃣</span><span class="label">80% consistency beats one perfect week.</span></div>
+      <div class="habit"><span class="icon">3️⃣</span><span class="label">Don't keep changing the system.</span></div>
+      <div class="habit"><span class="icon">4️⃣</span><span class="label">Create before consuming.</span></div>
+      <div class="habit"><span class="icon">5️⃣</span><span class="label">Don't announce the transformation. Build it.</span></div>
+    </section>
+    <section class="card">
+      <h2>⚠️ Reset</h2>
+      <p class="muted">Only use this if you intentionally want to erase every tick, note and review stored in this browser.</p>
+      <button class="action" style="background:#51202a" onclick="resetAll()">Erase All Data</button>
+    </section>
+  </main>
+
+  <div class="footer">Your data is stored locally in this browser. No account required.</div>
+</div>
+
+<script>
+const START = new Date(2026,9,1); // Oct 1
+const END = new Date(2026,11,31);
+const habits = [
+ ["⏰","Wake on time","Mindset"],["😴","Sleep 7–9 hours","Recovery"],
+ ["📚","Study 2+ hours","Study"],["💻","DSA / Coding 1+ hour","Skills"],
+ ["🎓","College revision","Study"],["🏋️","Workout / Exercise","Fitness"],
+ ["🚶","7–10k steps","Fitness"],["🍳","High-protein diet","Nutrition"],
+ ["💧","Enough water","Health"],["📱","Limited phone / social media","Discipline"],
+ ["🗣️","English / reading 15 min","Growth"],["🚀","Project work","Career"],
+ ["🧹","Room / desk clean","Discipline"],["✅","Followed today's plan","Discipline"]
+];
+let selected = new Date();
+selected.setHours(0,0,0,0);
+
+function key(d){return d.toISOString().slice(0,10)}
+function data(d){
+  const k=key(d), raw=localStorage.getItem("wa_"+k);
+  return raw ? JSON.parse(raw) : {checks:Array(habits.length).fill(false),note:""};
+}
+function saveData(d,obj){localStorage.setItem("wa_"+key(d),JSON.stringify(obj))}
+function clampDate(d){ if(d<START)return new Date(START); if(d>END)return new Date(END); return d}
+function formatDate(d){return d.toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"short",year:"numeric"})}
+function render(){
+  selected=clampDate(selected);
+  const obj=data(selected);
+  document.getElementById("dateTitle").innerHTML=formatDate(selected)+`<small>Day ${Math.floor((selected-START)/86400000)+1} of 92</small>`;
+  const box=document.getElementById("habits"); box.innerHTML="";
+  habits.forEach((h,i)=>{
+    const div=document.createElement("div");
+    div.className="habit "+(obj.checks[i]?"done":"");
+    div.onclick=()=>toggle(i);
+    div.innerHTML=`<div class="check">${obj.checks[i]?"✓":""}</div><span class="icon">${h[0]}</span><span class="label">${h[1]}</span><span class="tag">${h[2]}</span>`;
+    box.appendChild(div);
+  });
+  document.getElementById("note").value=obj.note||"";
+  updateScore();
+}
+function toggle(i){const o=data(selected);o.checks[i]=!o.checks[i];saveData(selected,o);render();updateStats()}
+function updateScore(){
+  const o=data(selected), n=o.checks.filter(Boolean).length, p=Math.round(n/habits.length*100);
+  document.getElementById("scoreText").textContent=p+"%";
+  document.getElementById("countText").textContent=n+" / "+habits.length;
+  document.getElementById("fill").style.width=p+"%";
+  document.getElementById("ring").style.setProperty("--p",p+"%");
+  let m=n===14?"🔥 Perfect day. Keep going.":n>=12?"💪 Excellent. You showed up.":n>=10?"🟢 Solid day. Keep the streak alive.":n>=7?"🟡 More than halfway. Finish strong.":"🔵 Start with one habit. Then another.";
+  document.getElementById("message").textContent=m;
+}
+function moveDate(n){selected=clampDate(new Date(selected.getTime()+n*86400000));render()}
+function goToday(){selected=new Date();selected.setHours(0,0,0,0);render()}
+function saveNote(){const o=data(selected);o.note=document.getElementById("note").value;saveData(selected,o);alert("Note saved ✓")}
+function showTab(t){
+  ["today","stats","review"].forEach(x=>{document.getElementById(x).classList.toggle("hidden",x!==t);document.getElementById("tab"+x[0].toUpperCase()+x.slice(1)).classList.toggle("active",x===t)});
+  if(t==="stats")updateStats();
+  if(t==="review")loadReview();
+}
+function dayScore(d){return data(d).checks.filter(Boolean).length}
+function dateRange(){let a=[];for(let d=new Date(START);d<=END;d.setDate(d.getDate()+1))a.push(new Date(d));return a}
+function updateStats(){
+  const dates=dateRange(), scores=dates.map(dayScore), completed=scores.filter(s=>s>0).length;
+  const avg=Math.round(scores.reduce((a,b)=>a+b,0)/(dates.length*habits.length)*100);
+  let cur=0,best=0;
+  for(let i=0;i<scores.length;i++){if(scores[i]>=10){cur++;best=Math.max(best,cur)}else cur=0}
+  let current=0; for(let i=scores.length-1;i>=0;i--){if(scores[i]>=10)current++;else break}
+  document.getElementById("daysDone").textContent=completed;
+  document.getElementById("avgScore").textContent=avg+"%";
+  document.getElementById("bestStreak").textContent=best+"d";
+  document.getElementById("currentStreak").textContent=current+" day"+(current===1?"":"s");
+  document.getElementById("streakFill").style.width=Math.min(current/14*100,100)+"%";
+  renderCalendar();
+}
+function renderCalendar(){
+  const el=document.getElementById("calendar");el.innerHTML="";
+  ["M","T","W","T","F","S","S"].forEach(x=>{let s=document.createElement("div");s.className="calhead";s.textContent=x;el.appendChild(s)});
+  const first=new Date(START), offset=(first.getDay()+6)%7;
+  for(let i=0;i<offset;i++){let e=document.createElement("div");e.className="day empty";el.appendChild(e)}
+  dateRange().forEach(d=>{
+    let s=dayScore(d), e=document.createElement("div");
+    e.className="day "+(s>=12?"good":s>=10?"mid":s>0?"bad":"");
+    if(key(d)===key(new Date()))e.classList.add("today");
+    e.textContent=d.getDate();e.title=`${formatDate(d)}: ${s}/14`;
+    e.onclick=()=>{selected=new Date(d);showTab("today");render()};
+    el.appendChild(e);
+  });
+}
+function weekKey(d){
+  const x=new Date(d); const day=(x.getDay()+6)%7; x.setDate(x.getDate()-day);
+  return x.toISOString().slice(0,10);
+}
+function saveReview(){const k="review_"+weekKey(selected);localStorage.setItem(k,document.getElementById("reviewText").value);alert("Weekly review saved ✓")}
+function loadReview(){document.getElementById("reviewText").value=localStorage.getItem("review_"+weekKey(selected))||""}
+function resetAll(){if(confirm("Erase all Winter Arc data from this browser?")){Object.keys(localStorage).filter(k=>k.startsWith("wa_")||k.startsWith("review_")).forEach(k=>localStorage.removeItem(k));render();updateStats();alert("All tracker data erased.")}}
+render();
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
